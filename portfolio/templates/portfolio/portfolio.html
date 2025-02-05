@@ -1,0 +1,138 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Portfolio</title>
+    
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/lucide/0.263.1/umd/lucide.min.js"></script>
+    <script>
+        // Configure tailwind
+        tailwind.config = {
+            theme: {
+                extend: {}
+            }
+        }
+    </script>
+</head>
+<body>
+    <div class="min-h-screen bg-gradient-to-br from-purple-500 via-pink-500 to-orange-500">
+        <nav class="bg-white/10 backdrop-blur-md p-4">
+            <div class="max-w-6xl mx-auto flex justify-between items-center">
+                <h1 class="text-2xl font-bold text-white">Portfolio</h1>
+                <div class="space-x-4">
+                    <button onclick="showSection('about')" class="section-btn px-4 py-2 rounded-full transition-all text-white hover:bg-white/20" data-section="about">About</button>
+                    <button onclick="showSection('projects')" class="section-btn px-4 py-2 rounded-full transition-all text-white hover:bg-white/20" data-section="projects">Projects</button>
+                    <button onclick="showSection('skills')" class="section-btn px-4 py-2 rounded-full transition-all text-white hover:bg-white/20" data-section="skills">Skills</button>
+                    <button onclick="showSection('contact')" class="section-btn px-4 py-2 rounded-full transition-all text-white hover:bg-white/20" data-section="contact">Contact</button>
+                    {% comment %} <button onclick="showSection('contact')" class="section-btn px-4 py-2 rounded-full transition-all text-white hover:bg-white/20" data-section="contact"><img src="{% static 'your_photo.jpg' %}" alt="Example Image" width="50" height="50" border-radius: "50%" border: "80px"></button> {% endcomment %}
+                </div>
+            </div>
+        </nav>
+
+        <main class="max-w-6xl mx-auto p-8">
+            <!-- About Section -->
+            <div id="about" class="section bg-white/20 backdrop-blur-md rounded-3xl p-8 text-white">
+                <h2 class="text-4xl font-bold mb-6">Hello, I'm Nikhil Kumar Sharma</h2>
+                <p class="text-xl mb-4">Creative Developer & Designer</p>
+                <p class="text-lg leading-relaxed">
+                    Aspiring Software Developer with a strong foundation in Python, Django, HTML, CSS, JavaScript, and SQL. Skilled in building scalable web applications and integrating frontend and backend components. Passionate about learning and staying updated with industry trends. Seeking an entry-level position to contribute to innovative projects and collaborate with a talented team. Open to relocation.
+                </p>
+            </div>
+
+            <!-- Projects Section -->
+            <div id="projects" class="section hidden">
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                    {% for project in projects %}
+                    <div class="bg-white/20 backdrop-blur-md rounded-3xl p-6 text-white transform transition-all hover:scale-105">
+                        <div class="flex items-center gap-4 mb-4">
+                            <i data-lucide="{{ project.icon }}" class="w-6 h-6"></i>
+                            <h3 class="text-xl font-bold">{{ project.title }}</h3>
+                        </div>
+                        <p>{{ project.description }}</p>
+                    </div>
+                    {% empty %}
+                    <div class="bg-white/20 backdrop-blur-md rounded-3xl p-6 text-white">
+                        <p>No projects available at the moment.</p>
+                    </div>
+                    {% endfor %}
+                </div>
+            </div>
+
+            <!-- Skills Section -->
+                <div id="skills" class="section hidden bg-white/20 backdrop-blur-md rounded-3xl p-8 text-white">
+                    <h2 class="text-3xl font-bold mb-6">Skills</h2>
+                    <div class="space-y-6">
+                        {% for skill in skills %}
+                        <div>
+                            <div class="flex justify-between mb-2">
+                                <span>{{ skill.name }}</span>
+                                <span>{{ skill.level }}%</span>
+                            </div>
+                            <div class="h-3 bg-white/20 rounded-full">
+                                <div class="h-full bg-white rounded-full transition-all duration-1000"
+                                    style="width: {{ skill.level }}%"></div>
+                            </div>
+                        </div>
+                        {% empty %}
+                        <p>No skills listed yet.</p>
+                        {% endfor %}
+                    </div>
+                </div>
+
+            <!-- Contact Section -->
+            <div id="contact" class="section hidden bg-white/20 backdrop-blur-md rounded-3xl p-8 text-white">
+                <h2 class="text-3xl font-bold mb-6">Get in Touch</h2>
+                <div class="flex items-center gap-4 mb-4">
+                    <i data-lucide="mail" class="w-6 h-6"></i>
+                    <span>{{ email|default:"jane.doe@example.com" }}</span>
+                </div>
+                <form method="post" action="{% url 'contact' %}" class="space-y-4">
+                    {% csrf_token %}
+                    <input type="text" name="name" placeholder="Your Name"
+                           class="w-full p-3 rounded-lg bg-white/10 backdrop-blur-md border border-white/20 text-white placeholder-white/60 focus:outline-none focus:ring-2 focus:ring-white/40">
+                    <input type="email" name="email" placeholder="Your Email"
+                           class="w-full p-3 rounded-lg bg-white/10 backdrop-blur-md border border-white/20 text-white placeholder-white/60 focus:outline-none focus:ring-2 focus:ring-white/40">
+                    <textarea name="message" placeholder="Your Message" rows="4"
+                              class="w-full p-3 rounded-lg bg-white/10 backdrop-blur-md border border-white/20 text-white placeholder-white/60 focus:outline-none focus:ring-2 focus:ring-white/40"></textarea>
+                    <button type="submit" class="px-6 py-3 bg-white text-purple-600 rounded-lg font-bold hover:bg-white/90 transition-colors">
+                        Send Message
+                    </button>
+                </form>
+            </div>
+        </main>
+    </div>
+
+    <script>
+        // Initialize Lucide icons
+        lucide.createIcons();
+
+        // Section navigation
+        function showSection(sectionId) {
+            // Hide all sections
+            document.querySelectorAll('.section').forEach(section => {
+                section.classList.add('hidden');
+            });
+            
+            // Show selected section
+            document.getElementById(sectionId).classList.remove('hidden');
+            
+            // Update button styles
+            document.querySelectorAll('.section-btn').forEach(btn => {
+                if (btn.dataset.section === sectionId) {
+                    btn.classList.add('bg-white', 'text-purple-600');
+                    btn.classList.remove('text-white');
+                } else {
+                    btn.classList.remove('bg-white', 'text-purple-600');
+                    btn.classList.add('text-white');
+                }
+            });
+        }
+
+        // Show about section by default
+        showSection('about');
+    </script>
+</body>
+</html>
